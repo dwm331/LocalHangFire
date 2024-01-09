@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Serilog;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace LocalHangFire.Services
 {

@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--link rel=icon href="image/favicon/favicon-16x16.png" sizes="16x16" type="image/png"-->
+    <!--link rel=icon href="image/favicon/favicon-32x32.png" sizes="32x32" type="image/png"-->
+    <!--link rel="manifest" href="image/favicon/site.webmanifest"-->
+
+    <title>集章後臺管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content rounded-5 shadow">
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <div class="col-md-12">
+                        <h2 class="fw-bold mb-0">登入</h2><h5 class="fw-bold mb-0">測試站</h5>
+                    </div>
+                </div>
+
+                <div class="modal-body p-5 pt-0">
+                    <form class="row g-3" method="POST" enctype="multipart/form-data" id="my-form">
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control rounded-4" id="username" name="username" placeholder="帳號">
+                                <label for="username">帳號</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control rounded-4" id="password" name="password" placeholder="密碼">
+                                <label for="password">密碼</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input type="submit" class="btn btn-primary form-control" value="登入" id="btnSubmit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+        <script>
+            var apibaseUrl = "";
+
+            $(document).ready(function () {
+                getBaseUrl()
+
+                function getBaseUrl() {
+                    var getUrl = window.location;
+                    var baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
+                    apibaseUrl = baseUrl;
+                    console.log("=== apibaseUrl === " + apibaseUrl)
+                }
+
+                $("#btnSubmit").click(function (event) {
+                    //stop submit the form, we will post it manually.
+                    event.preventDefault();
+
+                    // Get form
+                    var form = $('#my-form')[0];
+
+                    // FormData object
+                    var data = new FormData(form);
+
+                    // disabled the submit button
+                    $("#btnSubmit").prop("disabled", true);
+
+                    var ajax_type = "POST";
+                    var ajax_url = apibaseUrl + "Account/Login";
+
+                    $.ajax({
+                        type: ajax_type,
+                        enctype: 'multipart/form-data',
+                        url: ajax_url,
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        timeout: 800000,
+                        success: function (data) {
+                            if(data.success) {
+                                alert("登入成功");
+                                //localStorage.setItem("token", data.data);
+                                console.log("token", data.data)
+                                $(location).attr("href", `/hangfire?access_token=${data.data}`);
+                            } else {
+                                alert("登入失敗");
+                            }
+                            $("#btnSubmit").prop("disabled", false);
+                        },
+                        error: function (e) {
+                            $("#btnSubmit").prop("disabled", false);
+                            alert("ERROR : " + e);
+                        }
+                    });
+                });
+            });
+
+        </script>
+</body>
+</html>
