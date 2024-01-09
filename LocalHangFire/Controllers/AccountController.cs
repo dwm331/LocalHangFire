@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using LocalHangFire.Dtos;
 using Hybrid.Helper;
-using LocalHangFire.Services;
 
 namespace LocalHangFire.Controllers
 {

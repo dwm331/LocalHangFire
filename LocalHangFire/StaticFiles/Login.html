@@ -58,6 +58,15 @@
             $(document).ready(function () {
                 getBaseUrl()
 
+                // 清除所有cookie
+                clearAllCookies();
+
+                function clearAllCookies() {
+                    document.cookie.split(";").forEach(cookie => {
+                        document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/");
+                    });
+                }
+
                 function getBaseUrl() {
                     var getUrl = window.location;
                     var baseUrl = getUrl.protocol + "//" + getUrl.host + "/";

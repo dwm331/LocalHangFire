@@ -108,6 +108,8 @@ app.UseStaticFiles(new StaticFileOptions
 
 var options = new DashboardOptions
 {
+    IsReadOnlyFunc = (DashboardContext context) =>
+        DashboardAccessAuthFilter.IsLocal(context),
     Authorization = new IDashboardAuthorizationFilter[]
         {
             new DashboardAccessAuthFilter(configuration, _customTokenValidationParameters, configuration.GetValue<string>("HangfireConfig:EditorRole")!)
