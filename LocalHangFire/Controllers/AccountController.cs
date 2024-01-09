@@ -33,7 +33,7 @@ namespace LocalHangFire.Controllers
         [HttpPost("Login")]
         public IActionResult BackendLogin([FromForm] string username, [FromForm] string password)
         {
-            Dictionary<string, AccountListBatchBase> _accountBatchs = _config.GetSection("AccountList").Get<Dictionary<string, AccountListBatchBase>>()!;
+            Dictionary<string, AccountListBatchBase> _accountBatchs = _config.GetSection("HangfireConfig:AccountList").Get<Dictionary<string, AccountListBatchBase>>()!;
             LoginResponseBase rep = new LoginResponseBase();
             foreach (KeyValuePair<string, AccountListBatchBase> user in _accountBatchs)
             {

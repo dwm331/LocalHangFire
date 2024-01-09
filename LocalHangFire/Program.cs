@@ -68,6 +68,9 @@ var logger = new LoggerConfiguration()
         .ReadFrom.Configuration(configuration)
         .CreateLogger();
 
+// 實體化
+Log.Logger = logger;
+
 builder.Host.UseSerilog();
 
 var app = builder.Build();
@@ -80,7 +83,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 // 加入認證及授權中介軟體
 app.UseAuthentication();
@@ -91,11 +93,11 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(app.Environment.ContentRootPath, "StaticFiles")),
-    RequestPath = "/account",
+    RequestPath = "/Auth",
     OnPrepareResponse = ctx =>
     {
         // 如果有下載檔案，在更詳盡的設定路徑
-        if (ctx.Context.Request.Path.StartsWithSegments("/account"))
+        if (ctx.Context.Request.Path.StartsWithSegments("/Auth"))
         {
             ctx.Context.Response.Headers.Add("Cache-Control", "no-store;no-cache");
         }
@@ -108,9 +110,9 @@ var options = new DashboardOptions
 {
     Authorization = new IDashboardAuthorizationFilter[]
         {
-            new DashboardAccessAuthFilter(configuration, _customTokenValidationParameters, "Admin")
+            new DashboardAccessAuthFilter(configuration, _customTokenValidationParameters, configuration.GetValue<string>("HangfireConfig:EditorRole")!)
         },
-    AppPath = "https://localhost:7125/account/Login.html"
+    AppPath = configuration.GetValue<string>("HangfireConfig:HangFireHome")!
 };
 app.UseHangfireDashboard("/hangfire", options);
 

@@ -1,10 +1,7 @@
 ﻿using Hangfire.Dashboard;
 using Hybrid.Helper;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Serilog.Core;
-using System.Net;
 
 namespace LocalHangFire.Filter
 {
@@ -12,8 +9,8 @@ namespace LocalHangFire.Filter
     {
         private IConfiguration _configuration { get; }
 
-        private const string HangFireCookieName = "HangFireCookie";
-        private const int CookieExpirationMinutes = 60;
+        private string HangFireCookieName;
+        private int CookieExpirationMinutes;
 
         private TokenValidationParameters _tokenValidationParameters;
         private string? _role;
@@ -23,6 +20,9 @@ namespace LocalHangFire.Filter
             _configuration = configuration;
             _tokenValidationParameters = tokenValidationParameters;
             _role = role;
+
+            HangFireCookieName = configuration.GetValue<string>("HangfireConfig:HangFireCookieName", "HangFireCookie")!;
+            CookieExpirationMinutes = configuration.GetValue<int>("HangfireConfig:CookieExpirationMinutes", 60);
         }
 
         public bool Authorize(DashboardContext context)
@@ -46,7 +46,7 @@ namespace LocalHangFire.Filter
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error during dashboard Hangfire JWT validation process: {e.Message}");
+                Log.Logger.Error($"Error during dashboard Hangfire JWT validation process: {e.Message}");
                 throw;
             }
 
